@@ -72,7 +72,7 @@ NewsApiClient newsClient(NEWS_API_KEY, NEWS_SOURCE);
 int newsIndex = 0;
 
 // Weather Client
-OpenWeatherMapClient weatherClient(APIKEY, CityIDs, 1, IS_METRIC);
+OpenWeatherMapClient weatherClient(APIKEY, CityIDs, 1, IS_METRIC, lang);
 // (some) Default Weather Settings
 boolean SHOW_DATE = false;
 boolean SHOW_CITY = true;
@@ -119,6 +119,8 @@ static const char CHANGE_FORM1[] PROGMEM = "<form class='w3-container' action='/
                       "<input class='w3-input w3-border w3-margin-bottom' type='text' name='openWeatherMapApiKey' value='%WEATHERKEY%' maxlength='70'>"
                       "<p><label>%CITYNAME1% (<a href='http://openweathermap.org/find' target='_BLANK'><i class='fas fa-search'></i> Search for City ID</a>)</label>"
                       "<input class='w3-input w3-border w3-margin-bottom' type='text' name='city1' value='%CITY1%' onkeypress='return isNumberKey(event)'></p>"
+                      "<label>OpenWeatherMap Language</label>"
+                      "<input class='w3-input w3-border w3-margin-bottom' type='text' name='openWeatherMapLanguage' value='%WEATHERLANG%' maxlength='70'>"
                       "<p><input name='metric' class='w3-check w3-margin-top' type='checkbox' %CHECKED%> Use Metric (Celsius)</p>"
                       "<p><input name='showdate' class='w3-check w3-margin-top' type='checkbox' %DATE_CHECKED%> Display Date</p>"
                       "<p><input name='showcity' class='w3-check w3-margin-top' type='checkbox' %CITY_CHECKED%> Display City Name</p>"
@@ -576,6 +578,7 @@ void handleLocations() {
   TIMEDBKEY = server.arg("TimeZoneDB");
   APIKEY = server.arg("openWeatherMapApiKey");
   CityIDs[0] = server.arg("city1").toInt();
+  lang = server.arg("openWeatherMapLanguage");
   flashOnSeconds = server.hasArg("flashseconds");
   IS_24HOUR = server.hasArg("is24hour");
   IS_PM = server.hasArg("isPM");
@@ -815,6 +818,7 @@ void handleConfigure() {
   String form = FPSTR(CHANGE_FORM1);
   form.replace("%TIMEDBKEY%", TIMEDBKEY);
   form.replace("%WEATHERKEY%", APIKEY);
+  form.replace("%WEATHERLANG%", lang);
 
 
   String cityName = "";
@@ -1337,6 +1341,7 @@ String writeCityIds() {
     f.println("TIMEDBKEY=" + TIMEDBKEY);
     f.println("APIKEY=" + APIKEY);
     f.println("CityID=" + String(CityIDs[0]));
+    f.println("lang=" + lang);
     f.println("marqueeMessage=" + marqueeMessage);
     f.println("newsSource=" + NEWS_SOURCE);
     f.println("timeDisplayTurnsOn=" + timeDisplayTurnsOn);
@@ -1418,6 +1423,11 @@ void readCityIds() {
       NEWS_API_KEY = line.substring(line.lastIndexOf("newsApiKey=") + 11);
       NEWS_API_KEY.trim();
       Serial.println("NEWS_API_KEY: " + NEWS_API_KEY);
+    }
+    if (line.indexOf("lang=") >= 0) {
+      lang = line.substring(line.lastIndexOf("lang=") + 5);
+      lang.trim();
+      Serial.println("lang: " + lang);
     }
     if (line.indexOf("isFlash=") >= 0) {
       flashOnSeconds = line.substring(line.lastIndexOf("isFlash=") + 8).toInt();
@@ -1578,6 +1588,7 @@ void readCityIds() {
   weatherClient.updateWeatherApiKey(APIKEY);
   weatherClient.setMetric(IS_METRIC);
   weatherClient.updateCityIdList(CityIDs, 1);
+  weatherClient.updateLanguage(lang);
   printerClient.updateOctoPrintClient(OctoPrintApiKey, OctoPrintServer, OctoPrintPort, OctoAuthUser, OctoAuthPass);
 }
 

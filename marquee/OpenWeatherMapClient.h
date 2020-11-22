@@ -31,6 +31,7 @@ private:
   String myCityIDs = "";
   String myApiKey = "";
   String units = "";
+  String myLang = "";
   
   const char* servername = "api.openweathermap.org";  // remote server we will connect to
 
@@ -61,11 +62,12 @@ private:
   String roundValue(String value);
   
 public:
-  OpenWeatherMapClient(String ApiKey, int CityIDs[], int cityCount, boolean isMetric);
+  OpenWeatherMapClient(String ApiKey, int CityIDs[], int cityCount, boolean isMetric, String lang);
   void updateWeather();
   void updateWeatherApiKey(String ApiKey);
   void updateCityIdList(int CityIDs[], int cityCount);
   void setMetric(boolean isMetric);
+  void updateLanguage(String lang);
 
   String getLat(int index);
   String getLon(int index);
