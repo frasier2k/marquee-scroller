@@ -47,6 +47,7 @@
 //declairing prototypes
 void configModeCallback (WiFiManager *myWiFiManager);
 int8_t getWifiQuality();
+String getTempSymbol(bool matrixFix = false);
 
 // LED Settings
 const int offset = 1;
@@ -382,7 +383,7 @@ void loop() {
       displayRefreshCount = minutesBetweenScrolling;
       String temperature = weatherClient.getTempRounded(0);
       String description = weatherClient.getDescription(0);
-      description.toUpperCase();
+      //description.toUpperCase();
       String msg;
       msg += " ";
 
@@ -393,11 +394,11 @@ void loop() {
       if (SHOW_CITY) {
         msg += weatherClient.getCity(0) + "  ";
       }
-      msg += temperature + getTempSymbol() + "  ";
+      msg += temperature + getTempSymbol(true) + "  ";
 
       //show high/low temperature
       if (SHOW_HIGHLOW) {
-        msg += "High/Low:" + weatherClient.getHigh(0) + "/" + weatherClient.getLow(0) + " " + getTempSymbol() + "  ";
+        msg += "High/Low:" + weatherClient.getHigh(0) + "/" + weatherClient.getLow(0) + " " + getTempSymbol(true) + "  ";
       }
       
       if (SHOW_CONDITION) {
@@ -453,7 +454,7 @@ void loop() {
       if (currentTemp.length() >= 3) {
         timeSpacer = " ";
       }
-      currentTime += timeSpacer + currentTemp + getTempSymbol();
+      currentTime += timeSpacer + currentTemp + getTempSymbol(true);
     }
     if (Wide_Clock_Style == "2") {
       currentTime += secondsIndicator(false) + TimeDB.zeroPad(second());
@@ -1223,10 +1224,14 @@ void flashLED(int number, int delayTime) {
   noTone(BUZZER_PIN);
 }
 
-String getTempSymbol() {
+String getTempSymbol(bool matrixFix) {
   String rtnValue = "F";
   if (IS_METRIC) {
-    rtnValue = "C";
+    if (matrixFix) {  //Matrix degree char fix
+      rtnValue = String((char)247) + "C";
+    } else {
+      rtnValue = "°C";
+    }
   }
   return rtnValue;
 }
