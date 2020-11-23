@@ -348,6 +348,7 @@ void setup() {
 // Main Looop
 //************************************************************
 void loop() {
+  delay(100);
   //Get some Weather Data to serve
   if ((getMinutesFromLastRefresh() >= minutesBetweenDataRefresh) || lastEpoch == 0) {
     getWeatherData();
@@ -398,21 +399,21 @@ void loop() {
 
       //show high/low temperature
       if (SHOW_HIGHLOW) {
-        msg += "High/Low:" + weatherClient.getHigh(0) + "/" + weatherClient.getLow(0) + " " + getTempSymbol(true) + "  ";
+        msg += "Max/Min:" + weatherClient.getHigh(0) + "/" + weatherClient.getLow(0) + " " + getTempSymbol(true) + "  ";
       }
       
       if (SHOW_CONDITION) {
         msg += description + "  ";
       }
       if (SHOW_HUMIDITY) {
-        msg += "Humidity:" + weatherClient.getHumidityRounded(0) + "%  ";
+        msg += "Luftfeuchtigkeit:" + weatherClient.getHumidityRounded(0) + "%  ";
       }
       if (SHOW_WIND) {
         msg += "Wind: " + weatherClient.getDirectionText(0) + " @ " + weatherClient.getWindRounded(0) + " " + getSpeedSymbol() + "  ";
       }
       //line to show barometric pressure
       if (SHOW_PRESSURE) {
-        msg += "Pressure:" + weatherClient.getPressure(0) + getPressureSymbol() + "  ";
+        msg += "Luftdruck:" + weatherClient.getPressure(0) + getPressureSymbol() + "  ";
       }
      
       msg += marqueeMessage + " ";
@@ -438,7 +439,6 @@ void loop() {
           msg += "    Pi-hole (" + piholeClient.getPiHoleStatus() + "): " + piholeClient.getAdsPercentageToday() + "% "; 
         }
       }
-
       scrollMessage(msg);
       drawPiholeGraph();
     }
@@ -1598,6 +1598,11 @@ void readCityIds() {
 }
 
 void scrollMessage(String msg) {
+  //Used font for matrix can not show german Umlaute
+  msg.replace("ä", "ae");
+  msg.replace("ö", "oe");
+  msg.replace("ü", "ue");
+  
   msg += " "; // add a space at the end
   for ( int i = 0 ; i < width * msg.length() + matrix.width() - 1 - spacer; i++ ) {
     if (WEBSERVER_ENABLED) {
@@ -1680,6 +1685,11 @@ void centerPrint(String msg) {
 }
 
 void centerPrint(String msg, boolean extraStuff) {
+  //Used font for matrix can not show german Umlaute
+  msg.replace("ä", "ae");
+  msg.replace("ö", "oe");
+  msg.replace("ü", "ue");
+  
   int x = (matrix.width() - (msg.length() * width)) / 2;
 
   // Print the static portions of the display before the main Message
