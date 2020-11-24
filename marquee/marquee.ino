@@ -1600,8 +1600,12 @@ void readCityIds() {
 void scrollMessage(String msg) {
   //Used font for matrix can not show german Umlaute
   msg.replace("ä", "ae");
+  msg.replace("Ä", "Ae");
   msg.replace("ö", "oe");
+  msg.replace("Ö", "Oe");
   msg.replace("ü", "ue");
+  msg.replace("Ü", "Ue");
+  msg.replace("ß", "ss");
   
   msg += " "; // add a space at the end
   for ( int i = 0 ; i < width * msg.length() + matrix.width() - 1 - spacer; i++ ) {
@@ -1687,8 +1691,12 @@ void centerPrint(String msg) {
 void centerPrint(String msg, boolean extraStuff) {
   //Used font for matrix can not show german Umlaute
   msg.replace("ä", "ae");
+  msg.replace("Ä", "Ae");
   msg.replace("ö", "oe");
+  msg.replace("Ö", "Oe");
   msg.replace("ü", "ue");
+  msg.replace("Ü", "Ue");
+  msg.replace("ß", "ss");
   
   int x = (matrix.width() - (msg.length() * width)) / 2;
 
